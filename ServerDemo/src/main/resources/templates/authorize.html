@@ -1,0 +1,93 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>授权管理</title>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        .form{background: rgba(199, 196, 174, 0.2);width:500px;margin:120px auto;}
+        /*阴影*/
+        .fa{display: inline-block;top: 10px;left: 6px;position: relative;}
+        p,i{font-size:16px;padding-left:26px;}
+        .errMsg{color: red;}
+    </style>
+    <script>
+        //同意授权
+        function agree() {
+            //获取用户名、密码
+            var clientId = $("#clientId").val();
+            var scope = $("#scope").val();
+
+            $.ajax({
+                url: "/oauth2.0/agree",
+                type: "POST",
+                dataType: "json",
+                async: false,
+                data: {
+                    "client_id": clientId,
+                    "scope": scope
+                },
+                success: function (data) {
+                    if (data.code == "200") {
+                        $("#errMsg").attr("style", "display:none");
+
+                        if (data.redirect_uri != null){
+                            window.location.href = data.redirect_uri;
+                        }
+                    } else if (data.result != null) {
+                        $("#errMsg").text(data.result);
+                        $("#errMsg").attr("style", "display:block");
+                    } else {
+                        $("#errMsg").text(data.msg);
+                        $("#errMsg").attr("style", "display:block");
+                    }
+                }
+            });
+        }
+
+        //拒绝授权
+        function reject() {
+            var userAgent = navigator.userAgent;
+            if (userAgent != null &&(userAgent.indexOf("Firefox") != -1 || userAgent.indexOf("Chrome") != -1)) {
+                window.location.href="about:blank";
+                window.close();
+            } else {
+                window.opener = null;
+                window.open("", "_self");
+                window.close();
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="form row">
+        <div class="form-horizontal col-md-offset-3" id="login_form">
+            <h3 class="form-title">应用 <span style="color:#FF0000" th:text="${clientName}">xxx</span> 请求连接：</h3>
+            <div class="col-md-9">
+                <div class="form-group">
+                    <input type="hidden" id="clientId" name="clientId" th:value="${clientId}">
+                    <input type="hidden" id="scope" name="scope" th:value="${scope}">
+                    <i class="fa fa-check-square" aria-hidden="true" th:switch="${scope}">
+                        <span th:case="super">获得你的所有信息</span>
+                        <span th:case="*">获得你的昵称、邮箱等基本信息</span>
+                    </i>
+                </div>
+                <div class="form-group">
+                    <span class="errMsg" id="errMsg" style="display: none">错误提示</span>
+                </div>
+                <div class="form-group col-md-offset-9">
+                    <button type="submit" class="btn btn-success pull-left" name="submit" onclick="agree()">授权</button>
+                    <button type="submit" class="btn btn-success pull-right" name="submit" onclick="reject()">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zifangsky.mapper.AuthClientUserMapper">
+  <resultMap id="BaseResultMap" type="cn.zifangsky.model.AuthClientUser">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="auth_client_id" jdbcType="INTEGER" property="authClientId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="auth_scope_id" jdbcType="INTEGER" property="authScopeId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, auth_client_id, user_id, auth_scope_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from auth_client_user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from auth_client_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.zifangsky.model.AuthClientUser">
+    insert into auth_client_user (id, auth_client_id, user_id, 
+      auth_scope_id)
+    values (#{id,jdbcType=INTEGER}, #{authClientId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      #{authScopeId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.zifangsky.model.AuthClientUser">
+    insert into auth_client_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="authClientId != null">
+        auth_client_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="authScopeId != null">
+        auth_scope_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="authClientId != null">
+        #{authClientId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="authScopeId != null">
+        #{authScopeId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.zifangsky.model.AuthClientUser">
+    update auth_client_user
+    <set>
+      <if test="authClientId != null">
+        auth_client_id = #{authClientId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="authScopeId != null">
+        auth_scope_id = #{authScopeId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.zifangsky.model.AuthClientUser">
+    update auth_client_user
+    set auth_client_id = #{authClientId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      auth_scope_id = #{authScopeId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByClientId" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from auth_client_user
+    where auth_client_id = #{clientId,jdbcType=INTEGER}
+      AND auth_scope_id = #{scopeId,jdbcType=INTEGER}
+    AND user_id = #{userId,jdbcType=INTEGER}
+  </select>
+</mapper>
