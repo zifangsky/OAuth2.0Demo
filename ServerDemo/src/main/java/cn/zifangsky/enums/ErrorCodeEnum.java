@@ -10,7 +10,7 @@ package cn.zifangsky.enums;
 public enum  ErrorCodeEnum {
     INVALID_REQUEST("invalid_request","请求缺少某个必需参数，包含一个不支持的参数或参数值，或者格式不正确。")
     ,INVALID_CLIENT("invalid_client","请求的client_id或client_secret参数无效。")
-    ,INVALID_GRANT("invalid_grant","请求的Authorization Code、Refresh Token等信息是无效、过期或已撤销的。")
+    ,INVALID_GRANT("invalid_grant","请求的Authorization Code、Access Token、Refresh Token等信息是无效的。")
     ,UNSUPPORTED_GRANT_TYPE("unsupported_grant_type","不支持的grant_type。")
     ,INVALID_SCOPE("invalid_scope","请求的scope参数是无效的、未知的、格式不正确的，或所请求的权限范围超过了数据拥有者所授予的权限范围。")
     ,EXPIRED_TOKEN("expired_token","请求的Access Token或Refresh Token已过期。")

@@ -153,5 +153,4 @@ public class UserController {
     public String userIndex(){
         return "userIndex";
     }
-
 }

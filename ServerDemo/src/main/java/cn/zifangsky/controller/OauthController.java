@@ -10,7 +10,6 @@ import cn.zifangsky.model.AuthRefreshToken;
 import cn.zifangsky.model.User;
 import cn.zifangsky.service.AuthorizationService;
 import cn.zifangsky.service.RedisService;
-import cn.zifangsky.service.UserService;
 import cn.zifangsky.utils.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
@@ -44,9 +43,6 @@ public class OauthController {
 
     @Resource(name = "authorizationServiceImpl")
     private AuthorizationService authorizationService;
-
-    @Resource(name = "userServiceImpl")
-    private UserService userService;
 
     /**
      * 注册需要接入的客户端信息

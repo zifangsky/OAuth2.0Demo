@@ -11,7 +11,6 @@ import java.util.Map;
  * @since 1.0.0
  */
 public interface UserService {
-    
     /**
      * 注册
      * @author zifangsky
@@ -43,4 +42,14 @@ public interface UserService {
      */
     void addUserRole(Integer userId, String roleName);
 
+    /**
+     * 通过scope查询不同程度的用户信息
+     * @author zifangsky
+     * @date 2018/8/22 20:04
+     * @since 1.0.0
+     * @param userId 用户ID
+     * @param scope scope
+     * @return cn.zifangsky.model.User
+     */
+    User selectUserInfoByScope(Integer userId, String scope);
 }

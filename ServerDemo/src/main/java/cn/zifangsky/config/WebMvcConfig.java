@@ -1,5 +1,6 @@
 package cn.zifangsky.config;
 
+import cn.zifangsky.interceptor.AccessTokenInterceptor;
 import cn.zifangsky.interceptor.LoginInterceptor;
 import cn.zifangsky.interceptor.OauthInterceptor;
 import org.springframework.context.annotation.Bean;
@@ -32,11 +33,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/user/**","/oauth2.0/**");
 		registry.addInterceptor(oauthInterceptor()).addPathPatterns("/oauth2.0/authorize");
+		registry.addInterceptor(accessTokenInterceptor()).addPathPatterns("/api/**");
 	}
 
 	@Bean
 	public OauthInterceptor oauthInterceptor(){
 		return new OauthInterceptor();
 	}
+
+	@Bean
+	public AccessTokenInterceptor accessTokenInterceptor(){
+	    return new AccessTokenInterceptor();
+    }
 
 }

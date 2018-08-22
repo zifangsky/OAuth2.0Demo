@@ -8,7 +8,6 @@ package cn.zifangsky.common;
  * @since 1.0.0
  */
 public class Constants {
-
     /**
      * 用户信息在session中存储的变量名
      */

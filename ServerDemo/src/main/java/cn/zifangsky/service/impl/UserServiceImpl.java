@@ -1,5 +1,6 @@
 package cn.zifangsky.service.impl;
 
+import cn.zifangsky.enums.ScopeEnum;
 import cn.zifangsky.mapper.RoleMapper;
 import cn.zifangsky.mapper.UserMapper;
 import cn.zifangsky.mapper.UserRoleMapper;
@@ -84,5 +85,20 @@ public class UserServiceImpl implements UserService{
                 }
             }
         }
+    }
+
+    @Override
+    public User selectUserInfoByScope(Integer userId, String scope) {
+        User user = userMapper.selectByPrimaryKey(userId);
+
+        //如果是基础权限，则部分信息不返回
+        if(ScopeEnum.BASIC.getCode().equalsIgnoreCase(scope)){
+            user.setPassword(null);
+            user.setCreateTime(null);
+            user.setUpdateTime(null);
+            user.setStatus(null);
+        }
+
+        return user;
     }
 }
