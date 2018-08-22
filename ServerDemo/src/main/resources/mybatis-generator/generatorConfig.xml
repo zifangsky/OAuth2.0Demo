@@ -95,7 +95,7 @@
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
         </table>-->
-        <table tableName="auth_access_token" domainObjectName="AuthAccessToken"
+        <table tableName="auth_refresh_token" domainObjectName="AuthRefreshToken"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">

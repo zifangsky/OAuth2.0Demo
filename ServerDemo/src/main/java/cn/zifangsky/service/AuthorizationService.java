@@ -2,6 +2,7 @@ package cn.zifangsky.service;
 
 import cn.zifangsky.model.AuthAccessToken;
 import cn.zifangsky.model.AuthClientDetails;
+import cn.zifangsky.model.AuthRefreshToken;
 import cn.zifangsky.model.User;
 
 /**
@@ -24,6 +25,16 @@ public interface AuthorizationService {
     boolean register(AuthClientDetails clientDetails);
 
     /**
+     * 通过id查询客户端信息
+     * @author zifangsky
+     * @date 2018/8/3 16:45
+     * @since 1.0.0
+     * @param id client_id
+     * @return cn.zifangsky.model.AuthClientDetails
+     */
+    AuthClientDetails selectClientDetailsById(Integer id);
+
+    /**
      * 通过client_id查询客户端信息
      * @author zifangsky
      * @date 2018/8/3 16:45
@@ -42,6 +53,26 @@ public interface AuthorizationService {
      * @return cn.zifangsky.model.AuthAccessToken
      */
     AuthAccessToken selectByAccessToken(String accessToken);
+
+    /**
+     * 通过主键查询记录
+     * @author zifangsky
+     * @date 2018/8/22 11:40
+     * @since 1.0.0
+     * @param 
+     * @return cn.zifangsky.model.AuthAccessToken
+     */
+    AuthAccessToken selectByAccessId(Integer id);
+
+    /**
+     * 通过Refresh Token查询记录
+     * @author zifangsky
+     * @date 2018/8/22 11:35
+     * @since 1.0.0
+     * @param refreshToken Refresh Token
+     * @return cn.zifangsky.model.AuthRefreshToken
+     */
+    AuthRefreshToken selectByRefreshToken(String refreshToken);
 
     /**
      * 保存哪个用户授权哪个接入的客户端哪种访问范围的权限
@@ -78,7 +109,7 @@ public interface AuthorizationService {
      * @param expiresIn 过期时间
      * @return java.lang.String
      */
-    String createAccessToken(User user, AuthClientDetails savedClientDetails, String grantType, String scope, Integer expiresIn);
+    String createAccessToken(User user, AuthClientDetails savedClientDetails, String grantType, String scope, Long expiresIn);
 
 
     /**

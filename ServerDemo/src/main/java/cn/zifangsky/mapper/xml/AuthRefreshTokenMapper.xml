@@ -5,7 +5,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="token_id" jdbcType="INTEGER" property="tokenId" />
     <result column="refresh_token" jdbcType="VARCHAR" property="refreshToken" />
-    <result column="expires_in" jdbcType="INTEGER" property="expiresIn" />
+    <result column="expires_in" jdbcType="BIGINT" property="expiresIn" />
     <result column="create_user" jdbcType="INTEGER" property="createUser" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_user" jdbcType="INTEGER" property="updateUser" />
@@ -29,7 +29,7 @@
       expires_in, create_user, create_time, 
       update_user, update_time)
     values (#{id,jdbcType=INTEGER}, #{tokenId,jdbcType=INTEGER}, #{refreshToken,jdbcType=VARCHAR}, 
-      #{expiresIn,jdbcType=INTEGER}, #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{expiresIn,jdbcType=BIGINT}, #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="cn.zifangsky.model.AuthRefreshToken">
@@ -71,7 +71,7 @@
         #{refreshToken,jdbcType=VARCHAR},
       </if>
       <if test="expiresIn != null">
-        #{expiresIn,jdbcType=INTEGER},
+        #{expiresIn,jdbcType=BIGINT},
       </if>
       <if test="createUser != null">
         #{createUser,jdbcType=INTEGER},
@@ -97,7 +97,7 @@
         refresh_token = #{refreshToken,jdbcType=VARCHAR},
       </if>
       <if test="expiresIn != null">
-        expires_in = #{expiresIn,jdbcType=INTEGER},
+        expires_in = #{expiresIn,jdbcType=BIGINT},
       </if>
       <if test="createUser != null">
         create_user = #{createUser,jdbcType=INTEGER},
@@ -118,17 +118,23 @@
     update auth_refresh_token
     set token_id = #{tokenId,jdbcType=INTEGER},
       refresh_token = #{refreshToken,jdbcType=VARCHAR},
-      expires_in = #{expiresIn,jdbcType=INTEGER},
+      expires_in = #{expiresIn,jdbcType=BIGINT},
       create_user = #{createUser,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_user = #{updateUser,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <select id="selectByTokenId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from auth_refresh_token
-    where token_id = #{tokenId,jdbcType=INTEGER}
-  </select>
+    <select id="selectByTokenId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from auth_refresh_token
+        where token_id = #{tokenId,jdbcType=INTEGER}
+    </select>
+    <select id="selectByRefreshToken" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from auth_refresh_token
+        where refresh_token = #{refreshToken,jdbcType=VARCHAR}
+    </select>
 </mapper>

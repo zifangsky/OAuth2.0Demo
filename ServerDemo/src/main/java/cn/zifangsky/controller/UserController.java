@@ -15,8 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -153,38 +151,6 @@ public class UserController {
      */
     @RequestMapping("/user/userIndex")
     public String userIndex(){
-        return "userIndex";
-    }
-
-    /**
-     * 用户首页
-     * @author zifangsky
-     * @date 2018/8/3 11:13
-     * @since 1.0.0
-     * @return java.lang.String
-     */
-    @RequestMapping("/user/test")
-    @ResponseBody
-    public String test(){
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
-        //cn/zifangsky/controller/UserController.class
-        URL url = classLoader.getResource("cn/zifangsky/controller/");
-        if(url != null){
-            File rootFile = new File(url.getFile());
-
-            if(rootFile.isDirectory()){
-                File[] files = rootFile.listFiles();
-                for(File childFile : files){
-                    System.out.println(childFile.getPath());
-                }
-
-            }else{
-                System.out.println(rootFile.getPath());
-            }
-
-        }
-
         return "userIndex";
     }
 

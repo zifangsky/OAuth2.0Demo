@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class AuthAccessToken {
     private Integer id;
+
     /**
      * Access Token
      */
@@ -26,7 +27,7 @@ public class AuthAccessToken {
     /**
      * 过期时间戳
      */
-    private Integer expiresIn;
+    private Long expiresIn;
 
     /**
      * 授权类型，比如：authorization_code
@@ -85,11 +86,11 @@ public class AuthAccessToken {
         this.clientId = clientId;
     }
 
-    public Integer getExpiresIn() {
+    public Long getExpiresIn() {
         return expiresIn;
     }
 
-    public void setExpiresIn(Integer expiresIn) {
+    public void setExpiresIn(Long expiresIn) {
         this.expiresIn = expiresIn;
     }
 

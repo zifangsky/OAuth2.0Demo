@@ -225,7 +225,7 @@ public class DateUtils {
      * @param days 天数
      * @return java.time.LocalDateTime
      */
-    public static LocalDateTime nextDays(int days){
+    public static LocalDateTime nextDays(Long days){
         return now().plusDays(days);
     }
 
@@ -238,7 +238,7 @@ public class DateUtils {
      * @param zoneOffset 时区，不填默认为+8
      * @return java.lang.Long
      */
-    public static Long nextDaysSecond(int days, ZoneOffset zoneOffset){
+    public static Long nextDaysSecond(Long days, ZoneOffset zoneOffset){
         LocalDateTime dateTime = nextDays(days);
 
         if(zoneOffset == null){
@@ -256,7 +256,7 @@ public class DateUtils {
      * @param days 天数
      * @return java.lang.Integer
      */
-    public static Integer dayToSecond(int days){
+    public static Long dayToSecond(Long days){
         return days * 86400;
     }
 

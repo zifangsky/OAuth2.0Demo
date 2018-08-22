@@ -18,7 +18,7 @@ public class AuthRefreshToken {
     /**
      * 过期时间戳
      */
-    private Integer expiresIn;
+    private Long expiresIn;
 
     private Integer createUser;
 
@@ -52,11 +52,11 @@ public class AuthRefreshToken {
         this.refreshToken = refreshToken == null ? null : refreshToken.trim();
     }
 
-    public Integer getExpiresIn() {
+    public Long getExpiresIn() {
         return expiresIn;
     }
 
-    public void setExpiresIn(Integer expiresIn) {
+    public void setExpiresIn(Long expiresIn) {
         this.expiresIn = expiresIn;
     }
 

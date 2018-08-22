@@ -24,8 +24,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author zifangsky
@@ -92,6 +92,11 @@ public class AuthorizationServiceImpl implements AuthorizationService{
     }
 
     @Override
+    public AuthClientDetails selectClientDetailsById(Integer id) {
+        return authClientDetailsMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
     public AuthClientDetails selectClientDetailsByClientId(String clientId) {
         return authClientDetailsMapper.selectByClientId(clientId);
     }
@@ -99,6 +104,16 @@ public class AuthorizationServiceImpl implements AuthorizationService{
     @Override
     public AuthAccessToken selectByAccessToken(String accessToken) {
         return authAccessTokenMapper.selectByAccessToken(accessToken);
+    }
+
+    @Override
+    public AuthAccessToken selectByAccessId(Integer id) {
+        return authAccessTokenMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public AuthRefreshToken selectByRefreshToken(String refreshToken) {
+        return authRefreshTokenMapper.selectByRefreshToken(refreshToken);
     }
 
     @Override
@@ -143,16 +158,16 @@ public class AuthorizationServiceImpl implements AuthorizationService{
     }
 
     @Override
-    public String createAccessToken(User user, AuthClientDetails savedClientDetails, String grantType, String scope, Integer expiresIn) {
+    public String createAccessToken(User user, AuthClientDetails savedClientDetails, String grantType, String scope, Long expiresIn) {
         Date current = new Date();
         //过期的时间戳
-        String expiresInStr = DateUtils.nextDaysSecond(ExpireEnum.ACCESS_TOKEN.getTime().intValue(), null).toString();
+        Long expiresAt = DateUtils.nextDaysSecond(ExpireEnum.ACCESS_TOKEN.getTime(), null);
 
         //1. 拼装待加密字符串（username + clientId + 当前精确到毫秒的时间戳）
         String str = user.getUsername() + savedClientDetails.getClientId() + String.valueOf(DateUtils.currentTimeMillis());
 
         //2. SHA1加密
-        String accessTokenStr = "1." + EncryptUtils.sha1Hex(str) + "." + expiresIn + "." + expiresInStr;
+        String accessTokenStr = "1." + EncryptUtils.sha1Hex(str) + "." + expiresIn + "." + expiresAt;
 
         //3. 保存Access Token
         AuthAccessToken savedAccessToken = authAccessTokenMapper.selectByUserIdClientIdScope(user.getId()
@@ -160,7 +175,7 @@ public class AuthorizationServiceImpl implements AuthorizationService{
         //如果存在userId + clientId + scope匹配的记录，则更新原纪录，否则向数据库中插入新纪录
         if(savedAccessToken != null){
             savedAccessToken.setAccessToken(accessTokenStr);
-            savedAccessToken.setExpiresIn(expiresIn);
+            savedAccessToken.setExpiresIn(expiresAt);
             savedAccessToken.setUpdateUser(user.getId());
             savedAccessToken.setUpdateTime(current);
             authAccessTokenMapper.updateByPrimaryKeySelective(savedAccessToken);
@@ -170,7 +185,7 @@ public class AuthorizationServiceImpl implements AuthorizationService{
             savedAccessToken.setUserId(user.getId());
             savedAccessToken.setUserName(user.getUsername());
             savedAccessToken.setClientId(savedClientDetails.getId());
-            savedAccessToken.setExpiresIn(expiresIn);
+            savedAccessToken.setExpiresIn(expiresAt);
             savedAccessToken.setScope(scope);
             savedAccessToken.setGrantType(grantType);
             savedAccessToken.setCreateUser(user.getId());
@@ -188,22 +203,22 @@ public class AuthorizationServiceImpl implements AuthorizationService{
     public String createRefreshToken(User user, AuthAccessToken authAccessToken) {
         Date current = new Date();
         //过期时间
-        Integer expiresIn = DateUtils.dayToSecond(ExpireEnum.REFRESH_TOKEN.getTime().intValue());
+        Long expiresIn = DateUtils.dayToSecond(ExpireEnum.REFRESH_TOKEN.getTime());
         //过期的时间戳
-        String expiresInStr = DateUtils.nextDaysSecond(ExpireEnum.REFRESH_TOKEN.getTime().intValue(), null).toString();
+        Long expiresAt = DateUtils.nextDaysSecond(ExpireEnum.REFRESH_TOKEN.getTime(), null);
 
         //1. 拼装待加密字符串（username + accessToken + 当前精确到毫秒的时间戳）
         String str = user.getUsername() + authAccessToken.getAccessToken() + String.valueOf(DateUtils.currentTimeMillis());
 
         //2. SHA1加密
-        String refreshTokenStr = "2." + EncryptUtils.sha1Hex(str) + "." + expiresIn + "." + expiresInStr;
+        String refreshTokenStr = "2." + EncryptUtils.sha1Hex(str) + "." + expiresIn + "." + expiresAt;
 
         //3. 保存Refresh Token
         AuthRefreshToken savedRefreshToken = authRefreshTokenMapper.selectByTokenId(authAccessToken.getId());
         //如果存在tokenId匹配的记录，则更新原纪录，否则向数据库中插入新纪录
         if(savedRefreshToken != null){
             savedRefreshToken.setRefreshToken(refreshTokenStr);
-            savedRefreshToken.setExpiresIn(DateUtils.dayToSecond(ExpireEnum.REFRESH_TOKEN.getTime().intValue()));
+            savedRefreshToken.setExpiresIn(expiresAt);
             savedRefreshToken.setUpdateUser(user.getId());
             savedRefreshToken.setUpdateTime(current);
             authRefreshTokenMapper.updateByPrimaryKeySelective(savedRefreshToken);
@@ -211,7 +226,7 @@ public class AuthorizationServiceImpl implements AuthorizationService{
             savedRefreshToken = new AuthRefreshToken();
             savedRefreshToken.setTokenId(authAccessToken.getId());
             savedRefreshToken.setRefreshToken(refreshTokenStr);
-            savedRefreshToken.setExpiresIn(DateUtils.dayToSecond(ExpireEnum.REFRESH_TOKEN.getTime().intValue()));
+            savedRefreshToken.setExpiresIn(expiresAt);
             savedRefreshToken.setCreateUser(user.getId());
             savedRefreshToken.setUpdateUser(user.getId());
             savedRefreshToken.setCreateTime(current);

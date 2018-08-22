@@ -6,6 +6,7 @@ import cn.zifangsky.enums.ExpireEnum;
 import cn.zifangsky.enums.GrantTypeEnum;
 import cn.zifangsky.model.AuthAccessToken;
 import cn.zifangsky.model.AuthClientDetails;
+import cn.zifangsky.model.AuthRefreshToken;
 import cn.zifangsky.model.User;
 import cn.zifangsky.service.AuthorizationService;
 import cn.zifangsky.service.RedisService;
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -131,7 +133,7 @@ public class OauthController {
             if(saveFlag){
                 result.put("code",200);
 
-                //登录成功之后的回调地址
+                //授权成功之后的回调地址
                 String redirectUrl = (String) session.getAttribute(Constants.SESSION_AUTH_REDIRECT_URL);
                 session.removeAttribute(Constants.SESSION_AUTH_REDIRECT_URL);
 
@@ -236,7 +238,7 @@ public class OauthController {
                 //获取允许访问的用户权限范围
                 String scope = redisService.get(authorizationCode);
                 //过期时间
-                Integer expiresIn = DateUtils.dayToSecond(ExpireEnum.ACCESS_TOKEN.getTime().intValue());
+                Long expiresIn = DateUtils.dayToSecond(ExpireEnum.ACCESS_TOKEN.getTime());
 
                 //生成Access Token
                 String accessTokenStr = authorizationService.createAccessToken(user, savedClientDetails, grantType, scope, expiresIn);
@@ -261,6 +263,68 @@ public class OauthController {
         }
     }
 
+
+    /**
+     * 通过Refresh Token刷新Access Token
+     * @author zifangsky
+     * @date 2018/8/22 11:11
+     * @since 1.0.0
+     * @param request HttpServletRequest
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     */
+    @RequestMapping(value = "/refreshToken", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public Map<String,Object> refreshToken(HttpServletRequest request){
+        Map<String,Object> result = new HashMap<>(8);
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute(Constants.SESSION_USER);
+
+        //获取Refresh Token
+        String refreshTokenStr = request.getParameter("refresh_token");
+
+        try {
+            AuthRefreshToken authRefreshToken = authorizationService.selectByRefreshToken(refreshTokenStr);
+
+            if(authRefreshToken != null) {
+                Long savedExpiresAt = authRefreshToken.getExpiresIn();
+                //过期日期
+                LocalDateTime expiresDateTime = DateUtils.ofEpochSecond(savedExpiresAt, null);
+                //当前日期
+                LocalDateTime nowDateTime = DateUtils.now();
+
+                //如果Refresh Token已经失效，则需要重新生成
+                if (expiresDateTime.isBefore(nowDateTime)) {
+                    this.generateErrorResponse(result, ErrorCodeEnum.EXPIRED_TOKEN);
+                    return result;
+                } else {
+                    //获取存储的Access Token
+                    AuthAccessToken authAccessToken = authorizationService.selectByAccessId(authRefreshToken.getTokenId());
+                    //获取对应的客户端信息
+                    AuthClientDetails savedClientDetails = authorizationService.selectClientDetailsById(authAccessToken.getClientId());
+
+                    //新的过期时间
+                    Long expiresIn = DateUtils.dayToSecond(ExpireEnum.ACCESS_TOKEN.getTime());
+                    //生成新的Access Token
+                    String newAccessTokenStr = authorizationService.createAccessToken(user, savedClientDetails
+                            , authAccessToken.getGrantType(), authAccessToken.getScope(), expiresIn);
+
+                    //返回数据
+                    result.put("access_token", newAccessTokenStr);
+                    result.put("refresh_token", refreshTokenStr);
+                    result.put("expires_in", expiresIn);
+                    result.put("scope", authAccessToken.getScope());
+                    return result;
+                }
+            }else {
+                this.generateErrorResponse(result, ErrorCodeEnum.INVALID_GRANT);
+                return result;
+            }
+        }catch (Exception e){
+            this.generateErrorResponse(result, ErrorCodeEnum.UNKNOWN_ERROR);
+            return result;
+        }
+    }
+
     /**
      * 组装错误请求的返回
      */
@@ -268,6 +332,5 @@ public class OauthController {
         result.put("error", errorCodeEnum.getError());
         result.put("error_description",errorCodeEnum.getErrorDescription());
     }
-
 
 }

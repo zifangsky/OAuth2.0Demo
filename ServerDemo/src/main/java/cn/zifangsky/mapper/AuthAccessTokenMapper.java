@@ -27,7 +27,7 @@ public interface AuthAccessTokenMapper {
      * @return cn.zifangsky.model.AuthAccessToken
      */
     AuthAccessToken selectByUserIdClientIdScope(@Param("userId") Integer userId, @Param("clientId") Integer clientId, @Param("scope") String scope);
-    
+
     /**
      * 通过Access Token查询记录
      * @author zifangsky

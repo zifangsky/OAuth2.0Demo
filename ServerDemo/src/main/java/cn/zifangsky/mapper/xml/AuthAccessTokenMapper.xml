@@ -7,7 +7,7 @@
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="user_name" jdbcType="VARCHAR" property="userName" />
     <result column="client_id" jdbcType="INTEGER" property="clientId" />
-    <result column="expires_in" jdbcType="INTEGER" property="expiresIn" />
+    <result column="expires_in" jdbcType="BIGINT" property="expiresIn" />
     <result column="grant_type" jdbcType="VARCHAR" property="grantType" />
     <result column="scope" jdbcType="VARCHAR" property="scope" />
     <result column="create_user" jdbcType="INTEGER" property="createUser" />
@@ -36,7 +36,7 @@
       create_time, update_user, update_time
       )
     values (#{id,jdbcType=INTEGER}, #{accessToken,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, 
-      #{userName,jdbcType=VARCHAR}, #{clientId,jdbcType=INTEGER}, #{expiresIn,jdbcType=INTEGER}, 
+      #{userName,jdbcType=VARCHAR}, #{clientId,jdbcType=INTEGER}, #{expiresIn,jdbcType=BIGINT}, 
       #{grantType,jdbcType=VARCHAR}, #{scope,jdbcType=VARCHAR}, #{createUser,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}
       )
@@ -98,7 +98,7 @@
         #{clientId,jdbcType=INTEGER},
       </if>
       <if test="expiresIn != null">
-        #{expiresIn,jdbcType=INTEGER},
+        #{expiresIn,jdbcType=BIGINT},
       </if>
       <if test="grantType != null">
         #{grantType,jdbcType=VARCHAR},
@@ -136,7 +136,7 @@
         client_id = #{clientId,jdbcType=INTEGER},
       </if>
       <if test="expiresIn != null">
-        expires_in = #{expiresIn,jdbcType=INTEGER},
+        expires_in = #{expiresIn,jdbcType=BIGINT},
       </if>
       <if test="grantType != null">
         grant_type = #{grantType,jdbcType=VARCHAR},
@@ -165,7 +165,7 @@
       user_id = #{userId,jdbcType=INTEGER},
       user_name = #{userName,jdbcType=VARCHAR},
       client_id = #{clientId,jdbcType=INTEGER},
-      expires_in = #{expiresIn,jdbcType=INTEGER},
+      expires_in = #{expiresIn,jdbcType=BIGINT},
       grant_type = #{grantType,jdbcType=VARCHAR},
       scope = #{scope,jdbcType=VARCHAR},
       create_user = #{createUser,jdbcType=INTEGER},
@@ -174,12 +174,12 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <select id="selectByUserIdClientIdScope" parameterType="java.util.Map" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from auth_access_token
-    where user_id = #{userId,jdbcType=INTEGER} AND client_id = #{clientId,jdbcType=INTEGER} AND scope = #{scope,jdbcType=VARCHAR}
-  </select>
+    <select id="selectByUserIdClientIdScope" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from auth_access_token
+        where user_id = #{userId,jdbcType=INTEGER} AND client_id = #{clientId,jdbcType=INTEGER} AND scope = #{scope,jdbcType=VARCHAR}
+    </select>
     <select id="selectByAccessToken" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
