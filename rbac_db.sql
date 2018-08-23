@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50720
 File Encoding         : 65001
 
-Date: 2018-08-22 20:28:35
+Date: 2018-08-23 15:23:50
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -33,12 +33,13 @@ CREATE TABLE `auth_access_token` (
   `update_user` int(11) DEFAULT NULL COMMENT '最后更新用户',
   `update_time` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Access Token信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Access Token信息表';
 
 -- ----------------------------
 -- Records of auth_access_token
 -- ----------------------------
-INSERT INTO `auth_access_token` VALUES ('1', '1.adebb0a4522d5dae9eaf94a5af4fec070c4f3dce.2592000.1537508734', '1', 'admin', '1', '1537508734', 'authorization_code', 'basic', '1', '2018-08-20 14:27:59', '1', '2018-08-22 13:45:35');
+INSERT INTO `auth_access_token` VALUES ('1', '1.6659c9d38f5943f97db334874e5229284cdd1523.2592000.1537600367', '1', 'admin', '1', '1537600367', 'authorization_code', 'basic', '1', '2018-08-20 14:27:59', '1', '2018-08-23 15:12:47');
+INSERT INTO `auth_access_token` VALUES ('2', '1.854373728dbcc35f6f56c7671823bf5e49042f34.2592000.1537600978', '2', 'zifangsky', '2', '1537600978', 'authorization_code', 'super', '2', '2018-08-23 14:08:07', '2', '2018-08-23 15:22:59');
 
 -- ----------------------------
 -- Table structure for auth_client_details
@@ -57,12 +58,13 @@ CREATE TABLE `auth_client_details` (
   `update_time` datetime DEFAULT NULL COMMENT '最后更新时间',
   `status` int(2) DEFAULT '0' COMMENT '0表示未开通；1表示正常使用；2表示已被禁用',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='接入的客户端信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='接入的客户端信息表';
 
 -- ----------------------------
 -- Records of auth_client_details
 -- ----------------------------
 INSERT INTO `auth_client_details` VALUES ('1', 'x3qwrgrO1wYdz72joZ8YyIuD', '测试客户端', 'DPTyJsBv1xjzEgv0MEjBnIVigaVUm3cr', 'http://127.0.0.1:7000/user/userIndex', '这是一个测试客户端服务', '1', '2018-08-06 15:17:18', '1', '2018-08-06 15:17:18', '1');
+INSERT INTO `auth_client_details` VALUES ('2', '7Ugj6XWmTDpyYp8M8njG3hqx', 'zifangsky的个人博客', 'tur2rlFfywR9OOP3fB5ZbsLTnNuNabI3', 'http://localhost:7080/login', '用于测试在客户端应用中连接授权服务器', '1', '2018-08-23 11:30:09', '1', '2018-08-23 11:30:09', '1');
 
 -- ----------------------------
 -- Table structure for auth_client_user
@@ -74,12 +76,13 @@ CREATE TABLE `auth_client_user` (
   `user_id` int(11) NOT NULL,
   `auth_scope_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='用户对某个接入客户端的授权信息';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='用户对某个接入客户端的授权信息';
 
 -- ----------------------------
 -- Records of auth_client_user
 -- ----------------------------
 INSERT INTO `auth_client_user` VALUES ('1', '1', '1', '2');
+INSERT INTO `auth_client_user` VALUES ('2', '2', '2', '1');
 
 -- ----------------------------
 -- Table structure for auth_refresh_token
@@ -95,12 +98,13 @@ CREATE TABLE `auth_refresh_token` (
   `update_user` int(11) DEFAULT NULL COMMENT '最后更新用户',
   `update_time` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Refresh Token信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Refresh Token信息表';
 
 -- ----------------------------
 -- Records of auth_refresh_token
 -- ----------------------------
-INSERT INTO `auth_refresh_token` VALUES ('1', '1', '2.5c58637a2d51e4470d3e1189978e94da8402785e.31536000.1566283826', '1566283826', '1', '2018-08-20 14:50:27', '1', '2018-08-20 14:50:27');
+INSERT INTO `auth_refresh_token` VALUES ('1', '1', '2.b19923a01cf35ccab48ddbd687750408bd1cb763.31536000.1566544316', '1566544316', '1', '2018-08-20 14:50:27', '1', '2018-08-23 15:11:57');
+INSERT INTO `auth_refresh_token` VALUES ('2', '2', '2.cb8a3e903eecd6b74fc33c111b4a286099ace3ce.31536000.1566544978', '1566544978', '2', '2018-08-23 14:08:07', '2', '2018-08-23 15:22:59');
 
 -- ----------------------------
 -- Table structure for auth_scope
