@@ -122,7 +122,7 @@ public class AuthorizationServiceImpl implements AuthorizationService{
 
         if(clientDetails != null && scope != null){
             AuthClientUser clientUser = authClientUserMapper.selectByClientId(clientDetails.getId(), userId, scope.getId());
-            //如果数据库中不存在纪录，则插入
+            //如果数据库中不存在记录，则插入
             if(clientUser == null){
                 clientUser = new AuthClientUser();
                 clientUser.setUserId(userId);
@@ -169,7 +169,7 @@ public class AuthorizationServiceImpl implements AuthorizationService{
         //3. 保存Access Token
         AuthAccessToken savedAccessToken = authAccessTokenMapper.selectByUserIdClientIdScope(user.getId()
                 , savedClientDetails.getId(), scope);
-        //如果存在userId + clientId + scope匹配的记录，则更新原纪录，否则向数据库中插入新纪录
+        //如果存在userId + clientId + scope匹配的记录，则更新原记录，否则向数据库中插入新记录
         if(savedAccessToken != null){
             savedAccessToken.setAccessToken(accessTokenStr);
             savedAccessToken.setExpiresIn(expiresAt);
@@ -212,7 +212,7 @@ public class AuthorizationServiceImpl implements AuthorizationService{
 
         //3. 保存Refresh Token
         AuthRefreshToken savedRefreshToken = authRefreshTokenMapper.selectByTokenId(authAccessToken.getId());
-        //如果存在tokenId匹配的记录，则更新原纪录，否则向数据库中插入新纪录
+        //如果存在tokenId匹配的记录，则更新原记录，否则向数据库中插入新记录
         if(savedRefreshToken != null){
             savedRefreshToken.setRefreshToken(refreshTokenStr);
             savedRefreshToken.setExpiresIn(expiresAt);

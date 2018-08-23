@@ -227,10 +227,9 @@ public class OauthController {
                 return result;
             }
 
-            //Authorization Code在redis中保存的KEY
-            //获取允许访问的用户权限范围
+            //从Redis获取允许访问的用户权限范围
             String scope = redisService.get(code + ":scope");
-            //获取对应的用户信息
+            //从Redis获取对应的用户信息
             User user = redisService.get(code + ":user");
 
             //如果能够通过Authorization Code获取到对应的用户信息，则说明该Authorization Code有效
