@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 定义一些页面需要做显示授权
+ * 检查是否已经存在授权
  *
  * @author zifangsky
  * @date 2018/8/10
@@ -38,14 +38,9 @@ public class OauthInterceptor extends HandlerInterceptorAdapter{
     @Autowired
     private AuthScopeMapper authScopeMapper;
 
-    /**
-     * 检查是否已经存在授权
-     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         HttpSession session = request.getSession();
-        //校验是否成功的标志
-        boolean flag = false;
         //参数信息
         String params = "?redirectUri=" + SpringContextUtils.getRequestUrl(request);
 

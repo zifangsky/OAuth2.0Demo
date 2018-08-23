@@ -10,6 +10,7 @@ import cn.zifangsky.model.AuthRefreshToken;
 import cn.zifangsky.model.User;
 import cn.zifangsky.service.AuthorizationService;
 import cn.zifangsky.service.RedisService;
+import cn.zifangsky.service.UserService;
 import cn.zifangsky.utils.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
@@ -43,6 +44,9 @@ public class OauthController {
 
     @Resource(name = "authorizationServiceImpl")
     private AuthorizationService authorizationService;
+
+    @Resource(name = "userServiceImpl")
+    private UserService userService;
 
     /**
      * 注册需要接入的客户端信息
@@ -165,15 +169,15 @@ public class OauthController {
         String scopeStr = request.getParameter("scope");
         //回调URL
         String redirectUri = request.getParameter("redirect_uri");
-        //state，用于防止CSRF攻击（非必填）
-        String state = request.getParameter("state");
+        //status，用于防止CSRF攻击（非必填）
+        String status = request.getParameter("status");
 
         //生成Authorization Code
-        String authorizationCode = authorizationService.createAuthorizationCode(clientIdStr, scopeStr, user.getUsername());
+        String authorizationCode = authorizationService.createAuthorizationCode(clientIdStr, scopeStr, user);
 
         String params = "?code=" + authorizationCode;
-        if(StringUtils.isNoneBlank(state)){
-            params = params + "&state=" + state;
+        if(StringUtils.isNoneBlank(status)){
+            params = params + "&status=" + status;
         }
 
         return new ModelAndView("redirect:" + redirectUri + params);
@@ -191,8 +195,6 @@ public class OauthController {
     @ResponseBody
     public Map<String,Object> token(HttpServletRequest request){
         Map<String,Object> result = new HashMap<>(8);
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute(Constants.SESSION_USER);
 
         //授权方式
         String grantType = request.getParameter("grant_type");
@@ -226,13 +228,13 @@ public class OauthController {
             }
 
             //Authorization Code在redis中保存的KEY
-            String authorizationCodeKey = Constants.REDIS_KEY_PREFIX_AUTH_CODE + clientIdStr + ":" + user.getUsername();
-            String authorizationCode = redisService.get(authorizationCodeKey);
+            //获取允许访问的用户权限范围
+            String scope = redisService.get(code + ":scope");
+            //获取对应的用户信息
+            User user = redisService.get(code + ":user");
 
-            //校验AuthorizationCode
-            if(StringUtils.isNoneBlank(authorizationCode) && authorizationCode.equals(code)){
-                //获取允许访问的用户权限范围
-                String scope = redisService.get(authorizationCode);
+            //如果能够通过Authorization Code获取到对应的用户信息，则说明该Authorization Code有效
+            if(StringUtils.isNoneBlank(scope) && user != null){
                 //过期时间
                 Long expiresIn = DateUtils.dayToSecond(ExpireEnum.ACCESS_TOKEN.getTime());
 
@@ -259,7 +261,6 @@ public class OauthController {
         }
     }
 
-
     /**
      * 通过Refresh Token刷新Access Token
      * @author zifangsky
@@ -272,8 +273,6 @@ public class OauthController {
     @ResponseBody
     public Map<String,Object> refreshToken(HttpServletRequest request){
         Map<String,Object> result = new HashMap<>(8);
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute(Constants.SESSION_USER);
 
         //获取Refresh Token
         String refreshTokenStr = request.getParameter("refresh_token");
@@ -297,6 +296,8 @@ public class OauthController {
                     AuthAccessToken authAccessToken = authorizationService.selectByAccessId(authRefreshToken.getTokenId());
                     //获取对应的客户端信息
                     AuthClientDetails savedClientDetails = authorizationService.selectClientDetailsById(authAccessToken.getClientId());
+                    //获取对应的用户信息
+                    User user = userService.selectByUserId(authAccessToken.getUserId());
 
                     //新的过期时间
                     Long expiresIn = DateUtils.dayToSecond(ExpireEnum.ACCESS_TOKEN.getTime());

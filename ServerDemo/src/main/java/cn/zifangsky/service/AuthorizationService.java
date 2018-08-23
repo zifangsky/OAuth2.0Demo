@@ -92,10 +92,10 @@ public interface AuthorizationService {
      * @since 1.0.0
      * @param clientIdStr 客户端ID
      * @param scopeStr scope
-     * @param username 用户名
+     * @param user 用户信息
      * @return java.lang.String
      */
-    String createAuthorizationCode(String clientIdStr, String scopeStr, String username);
+    String createAuthorizationCode(String clientIdStr, String scopeStr, User user);
 
     /**
      * 生成Access Token

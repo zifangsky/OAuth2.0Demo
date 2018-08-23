@@ -37,6 +37,11 @@ public class UserServiceImpl implements UserService{
     private UserRoleMapper userRoleMapper;
 
     @Override
+    public User selectByUserId(Integer userId) {
+        return userMapper.selectByPrimaryKey(userId);
+    }
+
+    @Override
     public boolean register(User user) {
         if(StringUtils.isNoneBlank(user.getUsername()) && StringUtils.isNoneBlank(user.getPassword())){
             Date current = new Date();

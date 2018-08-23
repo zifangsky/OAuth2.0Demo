@@ -12,6 +12,16 @@ import java.util.Map;
  */
 public interface UserService {
     /**
+     * 通过用户ID查询用户信息
+     * @author zifangsky
+     * @date 2018/8/23 15:07
+     * @since 1.0.0
+     * @param userId 用户ID
+     * @return cn.zifangsky.model.User
+     */
+    User selectByUserId(Integer userId);
+
+    /**
      * 注册
      * @author zifangsky
      * @date 2018/7/27 10:48

@@ -34,7 +34,6 @@ import java.util.Date;
  */
 @Service("authorizationServiceImpl")
 public class AuthorizationServiceImpl implements AuthorizationService{
-
     @Resource(name = "redisServiceImpl")
     private RedisService redisService;
 
@@ -139,19 +138,17 @@ public class AuthorizationServiceImpl implements AuthorizationService{
     }
 
     @Override
-    public String createAuthorizationCode(String clientIdStr, String scopeStr, String username) {
+    public String createAuthorizationCode(String clientIdStr, String scopeStr, User user) {
         //1. 拼装待加密字符串（clientId + scope + 当前精确到毫秒的时间戳）
         String str = clientIdStr + scopeStr + String.valueOf(DateUtils.currentTimeMillis());
 
         //2. SHA1加密
         String encryptedStr = EncryptUtils.sha1Hex(str);
 
-        //3. 将生成的Authorization Code保存到Redis（有效期为10分钟）
-        String redisKey = Constants.REDIS_KEY_PREFIX_AUTH_CODE + clientIdStr + ":" + username;
-        redisService.setWithExpire(redisKey, encryptedStr, ExpireEnum.AUTHORIZATION_CODE.getTime(), ExpireEnum.AUTHORIZATION_CODE.getTimeUnit());
-
-        //保存本次请求的授权范围
-        redisService.setWithExpire(encryptedStr, scopeStr, (ExpireEnum.AUTHORIZATION_CODE.getTime() + 1), ExpireEnum.AUTHORIZATION_CODE.getTimeUnit());
+        //3.1 保存本次请求的授权范围
+        redisService.setWithExpire(encryptedStr + ":scope", scopeStr, (ExpireEnum.AUTHORIZATION_CODE.getTime()), ExpireEnum.AUTHORIZATION_CODE.getTimeUnit());
+        //3.2 保存本次请求所属的用户信息
+        redisService.setWithExpire(encryptedStr + ":user", user, (ExpireEnum.AUTHORIZATION_CODE.getTime()), ExpireEnum.AUTHORIZATION_CODE.getTimeUnit());
 
         //4. 返回Authorization Code
         return encryptedStr;
