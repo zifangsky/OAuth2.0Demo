@@ -67,7 +67,7 @@ public class LoginController {
         //当前请求路径
         String currentUrl = request.getRequestURL().toString();
 
-        //code为空，则说明当前请求不是认证服务器的回调请求，则重定向URL到百度OAuth2.0登录
+        //code为空，则说明当前请求不是认证服务器的回调请求，则重定向URL到认证服务器登录
         if(StringUtils.isBlank(code)){
             //如果存在回调URL，则将这个URL添加到session
             if(StringUtils.isNoneBlank(redirectUrl)){

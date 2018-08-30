@@ -7,7 +7,7 @@ package cn.zifangsky.enums;
  * @date 2018/8/17
  * @since 1.0.0
  */
-public enum  ErrorCodeEnum {
+public enum ErrorCodeEnum {
     INVALID_STATUS("invalid_status","状态码校验失败，为避免CSRF攻击，请重新登录。")
     ,UNKNOWN_ERROR("unknown_error","程序发生未知异常，请联系管理员解决。");
 
