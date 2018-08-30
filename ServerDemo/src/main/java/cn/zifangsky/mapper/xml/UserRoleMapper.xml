@@ -80,4 +80,10 @@
         from user_role
         where role_id = (SELECT id FROM role WHERE role_name = #{roleName,jdbcType=VARCHAR})
     </select>
+  <select id="selectByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_role
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
 </mapper>

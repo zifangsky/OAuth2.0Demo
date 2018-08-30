@@ -3,6 +3,8 @@ package cn.zifangsky.mapper;
 import cn.zifangsky.model.UserRole;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface UserRoleMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -36,4 +38,14 @@ public interface UserRoleMapper {
      * @return cn.zifangsky.model.UserRole
      */
     UserRole selectByRoleName(@Param("roleName") String roleName);
+
+    /**
+     * 通过用户ID查询用户角色信息
+     * @author zifangsky
+     * @date 2018/8/18 11:10
+     * @since 1.0.0
+     * @param userId 用户ID
+     * @return cn.zifangsky.model.UserRole
+     */
+    List<UserRole> selectByUserId(@Param("userId") Integer userId);
 }

@@ -22,7 +22,7 @@ import java.util.Map;
  * @date 2018/8/22
  * @since 1.0.0
  */
-public class AccessTokenInterceptor extends HandlerInterceptorAdapter{
+public class AuthAccessTokenInterceptor extends HandlerInterceptorAdapter{
     @Resource(name = "authorizationServiceImpl")
     private AuthorizationService authorizationService;
 

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50720
 File Encoding         : 65001
 
-Date: 2018-08-23 15:23:50
+Date: 2018-08-30 17:40:11
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -40,6 +40,30 @@ CREATE TABLE `auth_access_token` (
 -- ----------------------------
 INSERT INTO `auth_access_token` VALUES ('1', '1.6659c9d38f5943f97db334874e5229284cdd1523.2592000.1537600367', '1', 'admin', '1', '1537600367', 'authorization_code', 'basic', '1', '2018-08-20 14:27:59', '1', '2018-08-23 15:12:47');
 INSERT INTO `auth_access_token` VALUES ('2', '1.854373728dbcc35f6f56c7671823bf5e49042f34.2592000.1537600978', '2', 'zifangsky', '2', '1537600978', 'authorization_code', 'super', '2', '2018-08-23 14:08:07', '2', '2018-08-23 15:22:59');
+
+-- ----------------------------
+-- Table structure for auth_access_token_copy
+-- ----------------------------
+DROP TABLE IF EXISTS `auth_access_token_copy`;
+CREATE TABLE `auth_access_token_copy` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `access_token` varchar(255) NOT NULL COMMENT 'Access Token',
+  `user_id` int(11) NOT NULL COMMENT '关联的用户ID',
+  `user_name` varchar(100) DEFAULT NULL COMMENT '用户名',
+  `client_id` int(11) NOT NULL COMMENT '接入的客户端ID',
+  `expires_in` bigint(11) NOT NULL COMMENT '过期时间戳',
+  `grant_type` varchar(50) DEFAULT NULL COMMENT '授权类型，比如：authorization_code',
+  `scope` varchar(100) DEFAULT NULL COMMENT '可被访问的用户的权限范围，比如：basic、super',
+  `create_user` int(11) DEFAULT NULL COMMENT '创建用户',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_user` int(11) DEFAULT NULL COMMENT '最后更新用户',
+  `update_time` datetime DEFAULT NULL COMMENT '最后更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Access Token信息表';
+
+-- ----------------------------
+-- Records of auth_access_token_copy
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for auth_client_details
@@ -174,6 +198,71 @@ CREATE TABLE `role_func` (
 -- ----------------------------
 -- Records of role_func
 -- ----------------------------
+
+-- ----------------------------
+-- Table structure for sso_access_token
+-- ----------------------------
+DROP TABLE IF EXISTS `sso_access_token`;
+CREATE TABLE `sso_access_token` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `access_token` varchar(255) NOT NULL COMMENT 'Access Token',
+  `user_id` int(11) NOT NULL COMMENT '关联的用户ID',
+  `user_name` varchar(100) DEFAULT NULL COMMENT '用户名',
+  `ip` varchar(50) DEFAULT NULL COMMENT '用户来源IP',
+  `channel` varchar(50) DEFAULT '' COMMENT '表示这个Token用于什么渠道，比如：官网、APP1、APP2等等',
+  `expires_in` bigint(11) NOT NULL COMMENT '过期时间戳',
+  `create_user` int(11) DEFAULT NULL COMMENT '创建用户',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_user` int(11) DEFAULT NULL COMMENT '最后更新用户',
+  `update_time` datetime DEFAULT NULL COMMENT '最后更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='单点登录的Access Token信息表';
+
+-- ----------------------------
+-- Records of sso_access_token
+-- ----------------------------
+INSERT INTO `sso_access_token` VALUES ('1', '11.0e7baee3e290429b54a5692a4eee8af5f99a9862.2592000.1538210962', '1', 'admin', '127.0.0.1', 'APP1', '1538210962', '1', '2018-08-30 16:22:00', '1', '2018-08-30 16:49:23');
+INSERT INTO `sso_access_token` VALUES ('2', '11.d55683bb369203d92115715718c471aa95b10303.2592000.1538213606', '1', 'admin', '127.0.0.1', 'TEST_CLIENT1', '1538213606', '1', '2018-08-30 17:33:26', '1', '2018-08-30 17:33:26');
+INSERT INTO `sso_access_token` VALUES ('3', '11.6ce7388a0d37c81c2a0c5661dbb94e1670a81e34.2592000.1538213738', '1', 'admin', '127.0.0.1', 'APP2', '1538213738', '1', '2018-08-30 17:35:38', '1', '2018-08-30 17:35:38');
+
+-- ----------------------------
+-- Table structure for sso_refresh_token
+-- ----------------------------
+DROP TABLE IF EXISTS `sso_refresh_token`;
+CREATE TABLE `sso_refresh_token` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `token_id` int(11) NOT NULL COMMENT '表sso_access_token对应的Access Token记录',
+  `refresh_token` varchar(255) NOT NULL COMMENT 'Refresh Token',
+  `expires_in` bigint(11) NOT NULL COMMENT '过期时间戳',
+  `create_user` int(11) DEFAULT NULL COMMENT '创建用户',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_user` int(11) DEFAULT NULL COMMENT '最后更新用户',
+  `update_time` datetime DEFAULT NULL COMMENT '最后更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='单点登录的Refresh Token信息表';
+
+-- ----------------------------
+-- Records of sso_refresh_token
+-- ----------------------------
+INSERT INTO `sso_refresh_token` VALUES ('3', '1', '12.143a279cb81b0e5063af9912f346ae16e49c17e2.31536000.1567154963', '1567154963', '1', '2018-08-30 16:22:35', '1', '2018-08-30 16:49:23');
+INSERT INTO `sso_refresh_token` VALUES ('4', '2', '12.0647dacdeefe9084351a1c14db0baf13ede05b3c.31536000.1567157606', '1567157606', '1', '2018-08-30 17:33:27', '1', '2018-08-30 17:33:27');
+INSERT INTO `sso_refresh_token` VALUES ('5', '3', '12.08d739a43784b1b155cf26f44bbf082f91810727.31536000.1567157738', '1567157738', '1', '2018-08-30 17:35:39', '1', '2018-08-30 17:35:39');
+
+-- ----------------------------
+-- Table structure for sso_white_list
+-- ----------------------------
+DROP TABLE IF EXISTS `sso_white_list`;
+CREATE TABLE `sso_white_list` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `domain` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='单点登录的回调域名的白名单';
+
+-- ----------------------------
+-- Records of sso_white_list
+-- ----------------------------
+INSERT INTO `sso_white_list` VALUES ('1', 'http://127.0.0.1:7000/user/userIndex');
+INSERT INTO `sso_white_list` VALUES ('2', 'http://127.0.0.1:6080/login');
 
 -- ----------------------------
 -- Table structure for user

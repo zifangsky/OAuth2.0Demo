@@ -1,6 +1,7 @@
 package cn.zifangsky.service;
 
 import cn.zifangsky.model.User;
+import cn.zifangsky.model.bo.UserBo;
 
 import java.util.Map;
 
@@ -62,4 +63,14 @@ public interface UserService {
      * @return cn.zifangsky.model.User
      */
     User selectUserInfoByScope(Integer userId, String scope);
+
+    /**
+     * 通过用户ID查询用户所属角色等信息
+     * @author zifangsky
+     * @date 2018/8/30 15:22
+     * @since 1.0.0
+     * @param userId 用户ID
+     * @return cn.zifangsky.model.bo.UserBo
+     */
+    UserBo selectUserBoByUserId(Integer userId);
 }

@@ -7,18 +7,24 @@ import cn.zifangsky.mapper.UserRoleMapper;
 import cn.zifangsky.model.Role;
 import cn.zifangsky.model.User;
 import cn.zifangsky.model.UserRole;
+import cn.zifangsky.model.bo.RoleBo;
+import cn.zifangsky.model.bo.UserBo;
 import cn.zifangsky.service.UserService;
 import cn.zifangsky.utils.EncryptUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author zifangsky
@@ -105,5 +111,36 @@ public class UserServiceImpl implements UserService{
         }
 
         return user;
+    }
+
+    @Override
+    public UserBo selectUserBoByUserId(Integer userId) {
+        UserBo result = new UserBo();
+        User user = userMapper.selectByPrimaryKey(userId);
+
+
+        if(user != null){
+            BeanUtils.copyProperties(user, result);
+
+            List<UserRole> userRoleList = userRoleMapper.selectByUserId(userId);
+
+            if(userRoleList != null && userRoleList.size() > 0){
+                //查询用户对应的所有角色
+                Set<RoleBo> roles = new HashSet<>();
+
+                for(UserRole userRole : userRoleList){
+                    Role role = roleMapper.selectByPrimaryKey(userRole.getRoleId());
+                    RoleBo roleBo = new RoleBo();
+                    BeanUtils.copyProperties(role, roleBo);
+                    //可访问的功能权限相关信息在这个demo中就省略了
+                    roles.add(roleBo);
+                }
+
+                result.setRoles(roles);
+            }
+
+        }
+
+        return result;
     }
 }
