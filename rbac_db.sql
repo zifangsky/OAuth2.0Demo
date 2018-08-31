@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50720
 File Encoding         : 65001
 
-Date: 2018-08-30 17:40:11
+Date: 2018-08-31 14:30:11
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -59,7 +59,7 @@ CREATE TABLE `auth_access_token_copy` (
   `update_user` int(11) DEFAULT NULL COMMENT '最后更新用户',
   `update_time` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Access Token信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Access Token信息表';
 
 -- ----------------------------
 -- Records of auth_access_token_copy
@@ -216,14 +216,15 @@ CREATE TABLE `sso_access_token` (
   `update_user` int(11) DEFAULT NULL COMMENT '最后更新用户',
   `update_time` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='单点登录的Access Token信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='单点登录的Access Token信息表';
 
 -- ----------------------------
 -- Records of sso_access_token
 -- ----------------------------
 INSERT INTO `sso_access_token` VALUES ('1', '11.0e7baee3e290429b54a5692a4eee8af5f99a9862.2592000.1538210962', '1', 'admin', '127.0.0.1', 'APP1', '1538210962', '1', '2018-08-30 16:22:00', '1', '2018-08-30 16:49:23');
-INSERT INTO `sso_access_token` VALUES ('2', '11.d55683bb369203d92115715718c471aa95b10303.2592000.1538213606', '1', 'admin', '127.0.0.1', 'TEST_CLIENT1', '1538213606', '1', '2018-08-30 17:33:26', '1', '2018-08-30 17:33:26');
+INSERT INTO `sso_access_token` VALUES ('2', '11.a138398de46e0e7963820ab24532159771251be1.2592000.1538287591', '1', 'admin', '127.0.0.1', 'TEST_CLIENT1', '1538287591', '1', '2018-08-30 17:33:26', '1', '2018-08-31 14:06:32');
 INSERT INTO `sso_access_token` VALUES ('3', '11.6ce7388a0d37c81c2a0c5661dbb94e1670a81e34.2592000.1538213738', '1', 'admin', '127.0.0.1', 'APP2', '1538213738', '1', '2018-08-30 17:35:38', '1', '2018-08-30 17:35:38');
+INSERT INTO `sso_access_token` VALUES ('4', '11.c40f4990d25fd30670d0171bc99625d3aef134d0.2592000.1538288980', '2', 'zifangsky', '127.0.0.1', 'TEST_CLIENT1', '1538288980', '2', '2018-08-31 14:11:19', '2', '2018-08-31 14:29:40');
 
 -- ----------------------------
 -- Table structure for sso_refresh_token
@@ -239,14 +240,15 @@ CREATE TABLE `sso_refresh_token` (
   `update_user` int(11) DEFAULT NULL COMMENT '最后更新用户',
   `update_time` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='单点登录的Refresh Token信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='单点登录的Refresh Token信息表';
 
 -- ----------------------------
 -- Records of sso_refresh_token
 -- ----------------------------
 INSERT INTO `sso_refresh_token` VALUES ('3', '1', '12.143a279cb81b0e5063af9912f346ae16e49c17e2.31536000.1567154963', '1567154963', '1', '2018-08-30 16:22:35', '1', '2018-08-30 16:49:23');
-INSERT INTO `sso_refresh_token` VALUES ('4', '2', '12.0647dacdeefe9084351a1c14db0baf13ede05b3c.31536000.1567157606', '1567157606', '1', '2018-08-30 17:33:27', '1', '2018-08-30 17:33:27');
+INSERT INTO `sso_refresh_token` VALUES ('4', '2', '12.76ea056a721c7142c3a5c48d3f1e73f627c94c2e.31536000.1567231591', '1567231591', '1', '2018-08-30 17:33:27', '1', '2018-08-31 14:06:32');
 INSERT INTO `sso_refresh_token` VALUES ('5', '3', '12.08d739a43784b1b155cf26f44bbf082f91810727.31536000.1567157738', '1567157738', '1', '2018-08-30 17:35:39', '1', '2018-08-30 17:35:39');
+INSERT INTO `sso_refresh_token` VALUES ('6', '4', '12.62f4e8fd4a41e2bf075979d3639fd9a637999548.31536000.1567232980', '1567232980', '2', '2018-08-31 14:11:19', '2', '2018-08-31 14:29:40');
 
 -- ----------------------------
 -- Table structure for sso_white_list
@@ -256,13 +258,14 @@ CREATE TABLE `sso_white_list` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `domain` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='单点登录的回调域名的白名单';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='单点登录的回调域名的白名单';
 
 -- ----------------------------
 -- Records of sso_white_list
 -- ----------------------------
 INSERT INTO `sso_white_list` VALUES ('1', 'http://127.0.0.1:7000/user/userIndex');
 INSERT INTO `sso_white_list` VALUES ('2', 'http://127.0.0.1:6080/login');
+INSERT INTO `sso_white_list` VALUES ('3', 'http://192.168.197.130:6080/login');
 
 -- ----------------------------
 -- Table structure for user
