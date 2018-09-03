@@ -84,7 +84,7 @@
 
 （5）通过Refresh Token刷新Access Token：
 
-**接口地址**：http://127.0.0.1:7000/oauth2.0/refreshToken?refresh_token=2.5c58637a2d51e4470d3e1189978e94da8402785e.31536000.1566283826
+**接口地址**：`http://127.0.0.1:7000/oauth2.0/refreshToken?refresh_token=2.5c58637a2d51e4470d3e1189978e94da8402785e.31536000.1566283826`
 
 **返回如下**：
 
