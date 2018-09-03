@@ -15,7 +15,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, access_token, user_id, user_name, ip, expires_in, create_user, create_time, update_user, 
+    id, access_token, user_id, user_name, ip, channel, expires_in, create_user, create_time, update_user,
     update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">

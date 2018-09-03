@@ -162,7 +162,7 @@ public class SsoController {
                     //新的过期时间
                     Long expiresIn = DateUtils.dayToSecond(ExpireEnum.ACCESS_TOKEN.getTime());
                     //生成新的Access Token
-                    String newAccessTokenStr = ssoService.createAccessToken(user, expiresIn, requestIp, null);
+                    String newAccessTokenStr = ssoService.createAccessToken(user, expiresIn, requestIp, ChannelEnum.fromCode(ssoAccessToken.getChannel()));
                     //查询用户信息
                     UserBo userBo = userService.selectUserBoByUserId(ssoAccessToken.getUserId());
 
@@ -181,6 +181,7 @@ public class SsoController {
                 return result;
             }
         }catch (Exception e){
+            e.printStackTrace();
             this.generateErrorResponse(result, ErrorCodeEnum.UNKNOWN_ERROR);
             return result;
         }
