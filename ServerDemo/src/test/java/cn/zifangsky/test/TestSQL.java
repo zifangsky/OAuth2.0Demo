@@ -24,8 +24,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 public class TestSQL {
 	@Autowired
 	private UserMapper userMapper;
-	@Autowired
-	private UserRoleMapper userRoleMapper;
 	
 	@Test
 	public void testSelect(){
@@ -34,9 +32,6 @@ public class TestSQL {
 
 		User user2 = userMapper.selectByUsername("zifangsky");
         System.out.println(JsonUtils.toJson(user2));
-
-        UserRole userRole = userRoleMapper.selectByRoleName("basic");
-        System.out.println(JsonUtils.toJson(userRole));
 	}
 
 }

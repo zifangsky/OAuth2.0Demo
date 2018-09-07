@@ -1,7 +1,7 @@
 package cn.zifangsky.service;
 
-import cn.zifangsky.enums.ChannelEnum;
 import cn.zifangsky.model.SsoAccessToken;
+import cn.zifangsky.model.SsoClientDetails;
 import cn.zifangsky.model.SsoRefreshToken;
 import cn.zifangsky.model.User;
 
@@ -13,6 +13,26 @@ import cn.zifangsky.model.User;
  * @since 1.0.0
  */
 public interface SsoService {
+
+    /**
+     * 根据ID查询接入客户端
+     * @author zifangsky
+     * @date 2018/8/30 16:36
+     * @since 1.0.0
+     * @param id id
+     * @return cn.zifangsky.model.SsoClientDetails
+     */
+    SsoClientDetails selectByPrimaryKey(Integer id);
+
+    /**
+     * 根据URL查询记录
+     * @author zifangsky
+     * @date 2018/8/30 16:36
+     * @since 1.0.0
+     * @param redirectUrl 回调URL
+     * @return cn.zifangsky.model.SsoClientDetails
+     */
+    SsoClientDetails selectByRedirectUrl(String redirectUrl);
 
     /**
      * 通过主键ID查询记录
@@ -61,11 +81,11 @@ public interface SsoService {
      * @since 1.0.0
      * @param user 用户信息
      * @param expiresIn 过期时间
-     * @param channel 请求Token的渠道
+     * @param ssoClientDetails 接入客户端详情
      * @param requestIP 用户请求的IP
      * @return java.lang.String
      */
-    String createAccessToken(User user, Long expiresIn, String requestIP, ChannelEnum channel);
+    String createAccessToken(User user, Long expiresIn, String requestIP, SsoClientDetails ssoClientDetails);
 
 
     /**

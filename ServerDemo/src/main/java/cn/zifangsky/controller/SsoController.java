@@ -2,10 +2,10 @@ package cn.zifangsky.controller;
 
 import cn.zifangsky.common.Constants;
 import cn.zifangsky.common.SpringContextUtils;
-import cn.zifangsky.enums.ChannelEnum;
 import cn.zifangsky.enums.ErrorCodeEnum;
 import cn.zifangsky.enums.ExpireEnum;
 import cn.zifangsky.model.SsoAccessToken;
+import cn.zifangsky.model.SsoClientDetails;
 import cn.zifangsky.model.SsoRefreshToken;
 import cn.zifangsky.model.User;
 import cn.zifangsky.model.bo.UserBo;
@@ -63,20 +63,20 @@ public class SsoController {
         Long expiresIn = DateUtils.dayToSecond(ExpireEnum.ACCESS_TOKEN.getTime());
         //回调URL
         String redirectUri = request.getParameter("redirect_uri");
-        //请求Token的渠道
-        ChannelEnum channel = ChannelEnum.fromCode(request.getParameter("channel"));
+        //查询接入客户端
+        SsoClientDetails ssoClientDetails = ssoService.selectByRedirectUrl(redirectUri);
 
         //获取用户IP
         String requestIp = SpringContextUtils.getRequestIp(request);
 
         //生成Access Token
-        String accessTokenStr = ssoService.createAccessToken(user, expiresIn, requestIp, channel);
+        String accessTokenStr = ssoService.createAccessToken(user, expiresIn, requestIp, ssoClientDetails);
         //查询已经插入到数据库的Access Token
         SsoAccessToken ssoAccessToken = ssoService.selectByAccessToken(accessTokenStr);
         //生成Refresh Token
         String refreshTokenStr = ssoService.createRefreshToken(user, ssoAccessToken);
         logger.info(MessageFormat.format("单点登录获取Token：username:【{0}】,channel:【{1}】,Access Token:【{2}】,Refresh Token:【{3}】"
-                ,user.getUsername(),channel,accessTokenStr,refreshTokenStr));
+                ,user.getUsername(),ssoClientDetails.getClientName(),accessTokenStr,refreshTokenStr));
 
         String params = "?code=" + accessTokenStr;
         return new ModelAndView("redirect:" + redirectUri + params);
@@ -156,13 +156,15 @@ public class SsoController {
                 } else {
                     //获取存储的Access Token
                     SsoAccessToken ssoAccessToken = ssoService.selectByAccessId(ssoRefreshToken.getTokenId());
+                    //查询接入客户端
+                    SsoClientDetails ssoClientDetails = ssoService.selectByPrimaryKey(ssoAccessToken.getClientId());
                     //获取对应的用户信息
                     User user = userService.selectByUserId(ssoAccessToken.getUserId());
 
                     //新的过期时间
                     Long expiresIn = DateUtils.dayToSecond(ExpireEnum.ACCESS_TOKEN.getTime());
                     //生成新的Access Token
-                    String newAccessTokenStr = ssoService.createAccessToken(user, expiresIn, requestIp, ChannelEnum.fromCode(ssoAccessToken.getChannel()));
+                    String newAccessTokenStr = ssoService.createAccessToken(user, expiresIn, requestIp, ssoClientDetails);
                     //查询用户信息
                     UserBo userBo = userService.selectUserBoByUserId(ssoAccessToken.getUserId());
 

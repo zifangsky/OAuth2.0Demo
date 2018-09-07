@@ -12,9 +12,10 @@ public class SsoAccessToken {
     private String userName;
 
     private String ip;
-    
+
+    private Integer clientId;
     /**
-     * Token的使用渠道（比如APP1、APP2），同一用户在一个渠道只能有一个token，在多个渠道可以存在多个token
+     * Token的使用渠道（比如APP1、APP2）
      */
     private String channel;
 
@@ -68,12 +69,20 @@ public class SsoAccessToken {
         this.ip = ip == null ? null : ip.trim();
     }
 
+    public Integer getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(Integer clientId) {
+        this.clientId = clientId;
+    }
+
     public String getChannel() {
         return channel;
     }
 
     public void setChannel(String channel) {
-        this.channel = channel;
+        this.channel = channel == null ? null : channel.trim();
     }
 
     public Long getExpiresIn() {

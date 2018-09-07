@@ -95,7 +95,7 @@
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
         </table>-->
-        <table tableName="sso_access_token" domainObjectName="SsoAccessToken"
+        <!--<table tableName="sso_access_token" domainObjectName="SsoAccessToken"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
@@ -104,8 +104,8 @@
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
-        </table>
-        <table tableName="sso_white_list" domainObjectName="SsoWhiteList"
+        </table>-->
+        <table tableName="sso_access_token" domainObjectName="SsoAccessToken"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">

@@ -1,10 +1,11 @@
 package cn.zifangsky.service.impl;
 
-import cn.zifangsky.enums.ChannelEnum;
 import cn.zifangsky.enums.ExpireEnum;
 import cn.zifangsky.mapper.SsoAccessTokenMapper;
+import cn.zifangsky.mapper.SsoClientDetailsMapper;
 import cn.zifangsky.mapper.SsoRefreshTokenMapper;
 import cn.zifangsky.model.SsoAccessToken;
+import cn.zifangsky.model.SsoClientDetails;
 import cn.zifangsky.model.SsoRefreshToken;
 import cn.zifangsky.model.User;
 import cn.zifangsky.service.SsoService;
@@ -13,6 +14,7 @@ import cn.zifangsky.utils.EncryptUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Date;
 
 /**
@@ -22,12 +24,22 @@ import java.util.Date;
  */
 @Service("ssoServiceImpl")
 public class SsoServiceImpl implements SsoService{
-
     @Autowired
     private SsoAccessTokenMapper ssoAccessTokenMapper;
     @Autowired
     private SsoRefreshTokenMapper ssoRefreshTokenMapper;
+    @Autowired
+    private SsoClientDetailsMapper ssoClientDetailsMapper;
 
+    @Override
+    public SsoClientDetails selectByPrimaryKey(Integer id) {
+        return ssoClientDetailsMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public SsoClientDetails selectByRedirectUrl(String redirectUrl) {
+        return ssoClientDetailsMapper.selectByRedirectUrl(redirectUrl);
+    }
 
     @Override
     public SsoAccessToken selectByAccessId(Integer id) {
@@ -50,19 +62,19 @@ public class SsoServiceImpl implements SsoService{
     }
 
     @Override
-    public String createAccessToken(User user, Long expiresIn, String requestIP, ChannelEnum channel) {
+    public String createAccessToken(User user, Long expiresIn, String requestIP, SsoClientDetails ssoClientDetails) {
         Date current = new Date();
         //过期的时间戳
         Long expiresAt = DateUtils.nextDaysSecond(ExpireEnum.ACCESS_TOKEN.getTime(), null);
 
         //1. 拼装待加密字符串（username + 渠道CODE + 当前精确到毫秒的时间戳）
-        String str = user.getUsername() + channel.getCode() + String.valueOf(DateUtils.currentTimeMillis());
+        String str = user.getUsername() + ssoClientDetails.getClientName() + String.valueOf(DateUtils.currentTimeMillis());
 
         //2. SHA1加密
         String accessTokenStr = "11." + EncryptUtils.sha1Hex(str) + "." + expiresIn + "." + expiresAt;
 
         //3. 保存Access Token
-       SsoAccessToken savedAccessToken = ssoAccessTokenMapper.selectByUserIdAndChannel(user.getId(), channel.getCode());
+       SsoAccessToken savedAccessToken = ssoAccessTokenMapper.selectByUserIdAndClientId(user.getId(), ssoClientDetails.getId());
         //如果存在匹配的记录，则更新原记录，否则向数据库中插入新记录
         if(savedAccessToken != null){
             savedAccessToken.setAccessToken(accessTokenStr);
@@ -76,7 +88,8 @@ public class SsoServiceImpl implements SsoService{
             savedAccessToken.setUserId(user.getId());
             savedAccessToken.setUserName(user.getUsername());
             savedAccessToken.setIp(requestIP);
-            savedAccessToken.setChannel(channel.getCode());
+            savedAccessToken.setClientId(ssoClientDetails.getId());
+            savedAccessToken.setChannel(ssoClientDetails.getClientName());
             savedAccessToken.setExpiresIn(expiresAt);
             savedAccessToken.setCreateUser(user.getId());
             savedAccessToken.setUpdateUser(user.getId());

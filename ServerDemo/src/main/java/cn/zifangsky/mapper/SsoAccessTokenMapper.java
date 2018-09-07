@@ -22,10 +22,10 @@ public interface SsoAccessTokenMapper {
      * @date 2018/8/30 14:24
      * @since 1.0.0
      * @param userId 用户ID
-     * @param channel 请求Token的渠道
+     * @param clientId 请求Token的渠道
      * @return cn.zifangsky.model.SsoAccessToken
      */
-    SsoAccessToken selectByUserIdAndChannel(@Param("userId") Integer userId, @Param("channel") String channel);
+    SsoAccessToken selectByUserIdAndClientId(@Param("userId") Integer userId, @Param("clientId") Integer clientId);
 
     /**
      * 通过Access Token查询记录

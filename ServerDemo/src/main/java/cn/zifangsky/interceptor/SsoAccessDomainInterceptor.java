@@ -1,9 +1,8 @@
 package cn.zifangsky.interceptor;
 
-import cn.zifangsky.enums.ChannelEnum;
 import cn.zifangsky.enums.ErrorCodeEnum;
-import cn.zifangsky.mapper.SsoWhiteListMapper;
-import cn.zifangsky.model.SsoWhiteList;
+import cn.zifangsky.mapper.SsoClientDetailsMapper;
+import cn.zifangsky.model.SsoClientDetails;
 import cn.zifangsky.utils.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,19 +22,17 @@ import java.util.Map;
  */
 public class SsoAccessDomainInterceptor extends HandlerInterceptorAdapter{
     @Autowired
-    private SsoWhiteListMapper ssoWhiteListMapper;
+    private SsoClientDetailsMapper ssoClientDetailsMapper;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String redirectUri = request.getParameter("redirect_uri");
-        //请求Token的渠道
-        String channel = request.getParameter("channel");
 
-        if(StringUtils.isNoneBlank(redirectUri) && StringUtils.isNoneBlank(channel) && ChannelEnum.fromCode(channel) != null){
+        if(StringUtils.isNoneBlank(redirectUri)){
             //查询数据库中的回调地址的白名单
-            SsoWhiteList ssoWhiteList = ssoWhiteListMapper.selectByDomain(redirectUri);
+            SsoClientDetails ssoClientDetails = ssoClientDetailsMapper.selectByRedirectUrl(redirectUri);
 
-            if(ssoWhiteList != null){
+            if(ssoClientDetails != null){
                 return true;
             }else{
                 //如果回调URL不在白名单中，则返回错误提示
